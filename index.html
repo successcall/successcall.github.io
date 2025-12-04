@@ -37,6 +37,11 @@
 
   <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no"
     name="viewport">
+  
+  <!-- Cache busting meta tags -->
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
 
 
 
@@ -132,6 +137,52 @@
     }
   </script>
   <script>
+    // App version - Update this with each deployment
+    window.APP_VERSION = '1764861190';
+    
+    // Service Worker registration with update checking
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', function () {
+        navigator.serviceWorker.register('flutter_service_worker.js?v=' + Date.now())
+          .then(function(registration) {
+            console.log('Service Worker registered with scope:', registration.scope);
+            
+            // Check for updates every 60 seconds
+            setInterval(function() {
+              registration.update().then(function() {
+                console.log('Checked for Service Worker updates');
+              });
+            }, 60000);
+            
+            // Handle updates
+            registration.addEventListener('updatefound', function() {
+              const newWorker = registration.installing;
+              newWorker.addEventListener('statechange', function() {
+                if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                  // New service worker is ready, show update notification
+                  console.log('New version available! Reloading...');
+                  // Auto-reload to get new version
+                  window.location.reload();
+                }
+              });
+            });
+          })
+          .catch(function(error) {
+            console.log('Service Worker registration failed:', error);
+          });
+      });
+    }
+    
+    // Clear old caches on load
+    if ('caches' in window) {
+      caches.keys().then(function(cacheNames) {
+        cacheNames.forEach(function(cacheName) {
+          // You can add logic here to delete old caches if needed
+          console.log('Found cache:', cacheName);
+        });
+      });
+    }
+
     // Prevent zoom on desktop and mobile
     document.addEventListener('gesturestart', function (e) {
       e.preventDefault();
@@ -199,6 +250,7 @@
 
 
   <script src="flutter_bootstrap.js" async=""></script>
+  <script src="service_worker_loader.js"></script>
 
 
 </body>

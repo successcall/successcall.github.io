@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Cache Update Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+
+        .card {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        h2 {
+            color: #666;
+        }
+
+        .status {
+            padding: 10px;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+
+        .success {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .warning {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .info {
+            background: #d1ecf1;
+            color: #0c5460;
+        }
+
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+
+        button:hover {
+            background: #0056b3;
+        }
+
+        code {
+            background: #f4f4f4;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+        }
+
+        #logs {
+            background: #1e1e1e;
+            color: #d4d4d4;
+            padding: 15px;
+            border-radius: 4px;
+            max-height: 300px;
+            overflow-y: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+        }
+
+        .log-entry {
+            margin: 5px 0;
+        }
+
+        .log-success {
+            color: #4ec9b0;
+        }
+
+        .log-error {
+            color: #f48771;
+        }
+
+        .log-warning {
+            color: #dcdcaa;
+        }
+
+        .log-info {
+            color: #9cdcfe;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>🔧 Cache Update System Test</h1>
+
+    <div class="card">
+        <h2>Service Worker Status</h2>
+        <div id="swStatus" class="status info">Checking...</div>
+        <div id="swDetails"></div>
+    </div>
+
+    <div class="card">
+        <h2>Version Information</h2>
+        <div id="versionInfo" class="status info">Loading...</div>
+    </div>
+
+    <div class="card">
+        <h2>Cache Status</h2>
+        <div id="cacheStatus" class="status info">Checking...</div>
+        <div id="cacheList"></div>
+    </div>
+
+    <div class="card">
+        <h2>Actions</h2>
+        <button onclick="checkForUpdates()">🔄 Check for Updates</button>
+        <button onclick="clearCaches()">🗑️ Clear All Caches</button>
+        <button onclick="forceReload()">⚡ Force Reload</button>
+        <button onclick="unregisterSW()">❌ Unregister Service Worker</button>
+    </div>
+
+    <div class="card">
+        <h2>📋 Event Log</h2>
+        <button onclick="clearLogs()">Clear Logs</button>
+        <div id="logs"></div>
+    </div>
+
+    <script>
+        const logs = [];
+
+        function log(message, type = 'info') {
+            const timestamp = new Date().toLocaleTimeString();
+            const entry = `[${timestamp}] ${message}`;
+            logs.push({ entry, type });
+
+            const logDiv = document.getElementById('logs');
+            const logEntry = document.createElement('div');
+            logEntry.className = `log-entry log-${type}`;
+            logEntry.textContent = entry;
+            logDiv.appendChild(logEntry);
+            logDiv.scrollTop = logDiv.scrollHeight;
+
+            console.log(message);
+        }
+
+        function clearLogs() {
+            document.getElementById('logs').innerHTML = '';
+            logs.length = 0;
+        }
+
+        // Check Service Worker
+        async function checkServiceWorker() {
+            const statusDiv = document.getElementById('swStatus');
+            const detailsDiv = document.getElementById('swDetails');
+
+            if (!('serviceWorker' in navigator)) {
+                statusDiv.className = 'status error';
+                statusDiv.textContent = '❌ Service Workers not supported';
+                log('Service Workers not supported', 'error');
+                return;
+            }
+
+            try {
+                const registration = await navigator.serviceWorker.getRegistration();
+
+                if (registration) {
+                    statusDiv.className = 'status success';
+                    statusDiv.textContent = '✅ Service Worker Active';
+
+                    let details = '<ul>';
+                    details += `<li><strong>Scope:</strong> ${registration.scope}</li>`;
+                    details += `<li><strong>State:</strong> ${registration.active ? registration.active.state : 'N/A'}</li>`;
+                    details += `<li><strong>Script URL:</strong> ${registration.active ? registration.active.scriptURL : 'N/A'}</li>`;
+                    details += '</ul>';
+                    detailsDiv.innerHTML = details;
+
+                    log('Service Worker is active', 'success');
+                } else {
+                    statusDiv.className = 'status warning';
+                    statusDiv.textContent = '⚠️ No Service Worker registered';
+                    log('No Service Worker registered', 'warning');
+                }
+            } catch (error) {
+                statusDiv.className = 'status error';
+                statusDiv.textContent = '❌ Error checking Service Worker';
+                log(`Error: ${error.message}`, 'error');
+            }
+        }
+
+        // Check version
+        async function checkVersion() {
+            const versionDiv = document.getElementById('versionInfo');
+
+            try {
+                const response = await fetch('/version.json?t=' + Date.now());
+                if (response.ok) {
+                    const data = await response.json();
+                    versionDiv.className = 'status success';
+                    versionDiv.innerHTML = `
+                        ✅ Version: <code>${data.version}</code><br>
+                        📅 Build Date: ${data.date || 'N/A'}<br>
+                        🕐 Timestamp: ${data.timestamp}
+                    `;
+                    log(`Version: ${data.version}`, 'success');
+                } else {
+                    versionDiv.className = 'status warning';
+                    versionDiv.textContent = '⚠️ version.json not found';
+                    log('version.json not found', 'warning');
+                }
+            } catch (error) {
+                versionDiv.className = 'status error';
+                versionDiv.textContent = '❌ Error loading version';
+                log(`Version check error: ${error.message}`, 'error');
+            }
+        }
+
+        // Check caches
+        async function checkCaches() {
+            const statusDiv = document.getElementById('cacheStatus');
+            const listDiv = document.getElementById('cacheList');
+
+            if (!('caches' in window)) {
+                statusDiv.className = 'status error';
+                statusDiv.textContent = '❌ Cache API not supported';
+                return;
+            }
+
+            try {
+                const cacheNames = await caches.keys();
+
+                if (cacheNames.length > 0) {
+                    statusDiv.className = 'status success';
+                    statusDiv.textContent = `✅ ${cacheNames.length} cache(s) found`;
+
+                    let list = '<ul>';
+                    for (const name of cacheNames) {
+                        const cache = await caches.open(name);
+                        const keys = await cache.keys();
+                        list += `<li><strong>${name}</strong> (${keys.length} entries)</li>`;
+                    }
+                    list += '</ul>';
+                    listDiv.innerHTML = list;
+
+                    log(`Found ${cacheNames.length} caches`, 'success');
+                } else {
+                    statusDiv.className = 'status warning';
+                    statusDiv.textContent = '⚠️ No caches found';
+                    listDiv.innerHTML = '';
+                    log('No caches found', 'warning');
+                }
+            } catch (error) {
+                statusDiv.className = 'status error';
+                statusDiv.textContent = '❌ Error checking caches';
+                log(`Cache check error: ${error.message}`, 'error');
+            }
+        }
+
+        // Check for updates
+        async function checkForUpdates() {
+            log('Checking for updates...', 'info');
+
+            try {
+                const registration = await navigator.serviceWorker.getRegistration();
+                if (registration) {
+                    await registration.update();
+                    log('Update check completed', 'success');
+                    alert('Update check completed! Check console for details.');
+                } else {
+                    log('No service worker to update', 'warning');
+                    alert('No service worker registered!');
+                }
+            } catch (error) {
+                log(`Update check failed: ${error.message}`, 'error');
+                alert('Update check failed: ' + error.message);
+            }
+        }
+
+        // Clear all caches
+        async function clearCaches() {
+            if (!confirm('Clear all caches? This will reload the page.')) return;
+
+            log('Clearing all caches...', 'warning');
+
+            try {
+                const cacheNames = await caches.keys();
+                await Promise.all(cacheNames.map(name => caches.delete(name)));
+                log('All caches cleared', 'success');
+                alert('Caches cleared! Page will reload.');
+                window.location.reload();
+            } catch (error) {
+                log(`Cache clear error: ${error.message}`, 'error');
+                alert('Error clearing caches: ' + error.message);
+            }
+        }
+
+        // Force reload
+        function forceReload() {
+            log('Force reloading page...', 'warning');
+            window.location.reload(true);
+        }
+
+        // Unregister service worker
+        async function unregisterSW() {
+            if (!confirm('Unregister service worker? This will clear everything.')) return;
+
+            log('Unregistering service worker...', 'warning');
+
+            try {
+                const registration = await navigator.serviceWorker.getRegistration();
+                if (registration) {
+                    await registration.unregister();
+                    log('Service worker unregistered', 'success');
+                    await clearCaches();
+                } else {
+                    log('No service worker to unregister', 'warning');
+                    alert('No service worker registered!');
+                }
+            } catch (error) {
+                log(`Unregister error: ${error.message}`, 'error');
+                alert('Error: ' + error.message);
+            }
+        }
+
+        // Run checks on load
+        window.addEventListener('load', () => {
+            log('Page loaded, running checks...', 'info');
+            checkServiceWorker();
+            checkVersion();
+            checkCaches();
+        });
+
+        // Monitor service worker updates
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.addEventListener('controllerchange', () => {
+                log('Service Worker controller changed', 'info');
+                checkServiceWorker();
+            });
+        }
+    </script>
+</body>
+
+</html>

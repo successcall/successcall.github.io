@@ -1,0 +1,36 @@
+# HTML and JSON - No cache
+/*.html
+  Cache-Control: no-cache, no-store, must-revalidate
+  Pragma: no-cache
+  Expires: 0
+
+/*.json
+  Cache-Control: no-cache, no-store, must-revalidate
+  Pragma: no-cache
+  Expires: 0
+
+# Service Worker - No cache
+/flutter_service_worker.js
+  Cache-Control: no-cache, no-store, must-revalidate
+  Pragma: no-cache
+  Expires: 0
+
+# JS and CSS - Short cache
+/*.js
+  Cache-Control: public, max-age=3600, must-revalidate
+
+/*.css
+  Cache-Control: public, max-age=3600, must-revalidate
+
+# Static assets - Long cache
+/*.png
+  Cache-Control: public, max-age=604800, immutable
+
+/*.jpg
+  Cache-Control: public, max-age=604800, immutable
+
+/*.svg
+  Cache-Control: public, max-age=604800, immutable
+
+/*.woff2
+  Cache-Control: public, max-age=604800, immutable
