@@ -22,17 +22,37 @@
   <meta name="description"
     content="Success Call - Prayer Time Display App with accurate Iqamah times for Sri Lankan mosques.">
 
+  <!-- Open Graph / Social Meta tags (for WhatsApp, FB, Twitter, etc.) -->
+  <meta property="og:title" content="Success Call - Prayer Times">
+  <meta property="og:description" content="Prayer time display app with accurate Iqamah times for Sri Lankan mosques.">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="/social_preview_1200x630.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:url" content="https://example.com/">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Success Call - Prayer Times">
+  <meta name="twitter:description" content="Prayer time display app with accurate Iqamah times for Sri Lankan mosques.">
+  <meta name="twitter:image" content="/social_preview_1200x630.png">
+  <meta name="twitter:image:alt" content="Success Call app logo">
+  <link rel="image_src" href="/social_preview_1200x630.png">
+
   <!-- iOS meta tags & icons -->
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
   <meta name="apple-mobile-web-app-title" content="Success Call">
-  <link rel="apple-touch-icon" href="icons/Icon-192.png">
+  <link rel="apple-touch-icon" href="/favicon.ico">
 
   <!-- Favicon -->
-  <link rel="icon" type="image/png" href="favicon.png">
+  <link rel="icon" type="image/png" href="/favicon.ico">
+  <link rel="shortcut icon" href="/favicon.ico">
+  <!-- Apple / Windows tile -->
+  <meta name="msapplication-TileImage" content="/assets/images/splash_logo.png">
+  <meta name="theme-color" content="#0175C2">
 
   <title>Success Call - Prayer Times</title>
   <link rel="manifest" href="manifest.json">
+  <link rel="canonical" href="https://example.com/">
 
 
   <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no"
@@ -137,8 +157,36 @@
     }
   </script>
   <script>
+    // Set absolute URLs for social metadata & icons using the splash logo
+    (function () {
+      try {
+        var origin = window.location.origin || (window.location.protocol + '//' + window.location.host);
+        var image = origin + '/social_preview_1200x630.png';
+        // Append build timestamp to image URL to bust cache on new deployments
+        if (window.APP_VERSION) {
+          image += '?v=' + window.APP_VERSION;
+        }
+        var url = origin + window.location.pathname;
+        var ogImage = document.querySelector('meta[property="og:image"]');
+        if (ogImage) ogImage.setAttribute('content', image);
+        var ogUrl = document.querySelector('meta[property="og:url"]');
+        if (ogUrl) ogUrl.setAttribute('content', url);
+        var twitterImg = document.querySelector('meta[name="twitter:image"]');
+        if (twitterImg) twitterImg.setAttribute('content', image);
+        var canonical = document.querySelector('link[rel="canonical"]');
+        if (canonical) canonical.setAttribute('href', url);
+        var icon = document.querySelector('link[rel="icon"]');
+        if (icon) icon.setAttribute('href', image);
+        var apple = document.querySelector('link[rel="apple-touch-icon"]');
+        if (apple) apple.setAttribute('href', image);
+        var msTile = document.querySelector('meta[name="msapplication-TileImage"]');
+        if (msTile) msTile.setAttribute('content', image);
+      } catch (e) { console.warn('OG metadata script failed:', e) }
+    })();
+  </script>
+  <script>
     // App version - Update this with each deployment
-    window.APP_VERSION = '1764863284';
+    window.APP_VERSION = '1764880917';
 
     // Service worker is handled by service_worker_loader.js
     // No registration needed here to avoid conflicts

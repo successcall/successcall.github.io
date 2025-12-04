@@ -1,7 +1,7 @@
 {
     "name": "Success Call - Prayer Time Display",
     "short_name": "Success Call",
-    "start_url": ".?v=v1764863284",
+    "start_url": ".?v=v1764880917",
     "display": "standalone",
     "background_color": "#0175C2",
     "theme_color": "#0175C2",
@@ -9,6 +9,11 @@
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [
+        {
+            "src": "assets/images/splash_logo.png",
+            "sizes": "192x192 512x512",
+            "type": "image/png"
+        },
         {
             "src": "icons/Icon-192.png",
             "sizes": "192x192",
