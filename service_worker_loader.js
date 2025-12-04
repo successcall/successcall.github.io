@@ -1,29 +1,23 @@
 // Service Worker Loader with Auto-Update
 // This script manages service worker registration and automatic updates
 
-const CACHE_VERSION = 'v' + Date.now();
-const CACHE_NAME = 'successcall-cache-' + CACHE_VERSION;
+// Track if we've already reloaded to prevent loops
+const RELOAD_KEY = 'sw_reloaded';
+const LAST_VERSION_KEY = 'sw_last_version';
 
 // Register service worker
 if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
-        // Force service worker update on page load
-        navigator.serviceWorker.register('/flutter_service_worker.js?v=' + Date.now(), {
-            updateViaCache: 'none', // Always check for updates
+        // Register service worker without version query to avoid constant updates
+        navigator.serviceWorker.register('/flutter_service_worker.js', {
+            updateViaCache: 'none',
             scope: '/'
         })
             .then(registration => {
                 console.log('✅ Service Worker registered:', registration.scope);
 
-                // Force immediate update check
-                registration.update();
-
-                // Periodic update check every 30 seconds
-                setInterval(() => {
-                    registration.update().catch(err => {
-                        console.log('Update check failed:', err);
-                    });
-                }, 30000);
+                // Only check for updates when the service worker itself detects changes
+                // No periodic checking - updates happen automatically when you deploy new files
 
                 // Listen for updates
                 registration.addEventListener('updatefound', () => {
@@ -31,31 +25,28 @@ if ('serviceWorker' in navigator) {
                     console.log('🔄 New version found, installing...');
 
                     newWorker.addEventListener('statechange', () => {
-                        if (newWorker.state === 'installed') {
-                            if (navigator.serviceWorker.controller) {
-                                // New service worker installed, reload to activate
-                                console.log('✨ New version ready! Reloading page...');
+                        if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                            // Check if we just reloaded to avoid loop
+                            const justReloaded = sessionStorage.getItem(RELOAD_KEY);
 
-                                // Clear all old caches before reload
-                                caches.keys().then(cacheNames => {
-                                    return Promise.all(
-                                        cacheNames.map(cacheName => {
-                                            if (cacheName !== CACHE_NAME) {
-                                                console.log('🗑️ Deleting old cache:', cacheName);
-                                                return caches.delete(cacheName);
-                                            }
-                                        })
-                                    );
-                                }).then(() => {
-                                    // Wait a moment then reload
-                                    setTimeout(() => {
-                                        window.location.reload();
-                                    }, 500);
-                                });
-                            } else {
-                                // First installation
-                                console.log('✅ Service Worker installed for the first time');
+                            if (justReloaded) {
+                                console.log('✅ Already reloaded, skipping auto-reload');
+                                sessionStorage.removeItem(RELOAD_KEY);
+                                return;
                             }
+
+                            // New service worker installed, reload to activate
+                            console.log('✨ New version ready! Reloading page...');
+
+                            // Mark that we're about to reload
+                            sessionStorage.setItem(RELOAD_KEY, 'true');
+
+                            // Reload after a short delay
+                            setTimeout(() => {
+                                window.location.reload();
+                            }, 1000);
+                        } else if (newWorker.state === 'activated') {
+                            console.log('✅ Service Worker activated');
                         }
                     });
                 });
@@ -63,45 +54,31 @@ if ('serviceWorker' in navigator) {
             .catch(error => {
                 console.error('❌ Service Worker registration failed:', error);
             });
-
-        // Handle controller change
-        navigator.serviceWorker.addEventListener('controllerchange', () => {
-            console.log('🔄 Service Worker controller changed');
-        });
     });
 }
 
-// Clear old application cache on startup
-window.addEventListener('load', () => {
+// Clear old application cache on startup (once per session)
+if (!sessionStorage.getItem('cache_cleaned')) {
     if ('caches' in window) {
         caches.keys().then(cacheNames => {
-            cacheNames.forEach(cacheName => {
-                // Keep only the current cache version
-                if (cacheName.startsWith('successcall-cache-') && cacheName !== CACHE_NAME) {
-                    console.log('🗑️ Removing old cache:', cacheName);
-                    caches.delete(cacheName);
-                }
-            });
+            // Clean up old versioned caches
+            const oldCaches = cacheNames.filter(name =>
+                name.startsWith('successcall-cache-') && name !== 'successcall-cache-current'
+            );
+
+            if (oldCaches.length > 0) {
+                console.log('🗑️ Cleaning', oldCaches.length, 'old cache(s)');
+                Promise.all(oldCaches.map(name => caches.delete(name)));
+            }
         });
+        sessionStorage.setItem('cache_cleaned', 'true');
     }
-});
+}
 
-// Force refresh if coming from cache
-window.addEventListener('pageshow', (event) => {
-    if (event.persisted) {
-        console.log('📄 Page loaded from bfcache, checking for updates...');
-        window.location.reload();
-    }
-});
-
-// Detect online/offline status
+// Remove aggressive pageshow reload - it causes infinite loops
+// Detect online/offline status for logging only
 window.addEventListener('online', () => {
-    console.log('🌐 Online: Checking for updates...');
-    if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.ready.then(registration => {
-            registration.update();
-        });
-    }
+    console.log('🌐 Back online');
 });
 
 window.addEventListener('offline', () => {
