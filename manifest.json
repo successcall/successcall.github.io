@@ -1,7 +1,7 @@
 {
     "name": "Success Call - Prayer Time Display",
     "short_name": "Success Call",
-    "start_url": ".?v=v1764892750",
+    "start_url": ".?v={{BUILD_VERSION}}",
     "display": "standalone",
     "background_color": "#0175C2",
     "theme_color": "#0175C2",
