@@ -1,11 +1,11 @@
 {
     "name": "Success Call - Prayer Time Display",
     "short_name": "Success Call",
-    "start_url": ".?v=v1764880917",
+    "start_url": ".?v=v1764892750",
     "display": "standalone",
     "background_color": "#0175C2",
     "theme_color": "#0175C2",
-    "description": "Prayer time display app with accurate Iqamah times for Sri Lankan mosques.",
+    "description": "Prayer time display app with accurate Iqamah times for Sri Lankan masjids.",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [
