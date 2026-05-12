@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://successcall.github.io/sitemap.xml
