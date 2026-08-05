@@ -1,6 +1,9 @@
-<!DOCTYPE html><html><head>
+<!DOCTYPE html>
+<html>
+
+<head>
   <!-- Google tag (gtag.js) -->
-  <script async="" src="https://www.googletagmanager.com/gtag/js?id=G-LX9L2PL3K5"></script>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-LX9L2PL3K5"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
     function gtag(){dataLayer.push(arguments);}
@@ -26,13 +29,14 @@
 
   <meta charset="UTF-8">
   <meta content="IE=Edge" http-equiv="X-UA-Compatible">
-  <meta name="description" content="Sri Lanka prayer and Iqamah times with accurate masjid schedules for web and Android displays.">
+  <meta name="description"
+    content="Sri Lanka prayer and Iqamah times with accurate masjid schedules for web and Android displays.">
   <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
 
   <!-- Open Graph / Social Meta tags (for WhatsApp, FB, Twitter, etc.) -->
-  <meta property="og:title" content="Success Call Display | Sri Lanka Prayer &amp; Iqamah Times">
+  <meta property="og:title" content="Success Call | Sri Lanka Prayer &amp; Iqamah Times">
   <meta property="og:description" content="Sri Lanka prayer and Iqamah times with accurate masjid schedules for web and Android displays.">
-  <meta property="og:site_name" content="Success Call Display">
+  <meta property="og:site_name" content="Success Call">
   <meta property="og:locale" content="en_LK">
   <meta property="og:type" content="website">
   <meta property="og:image" content="https://successcall.github.io/social_preview_1200x630.png">
@@ -40,16 +44,16 @@
   <meta property="og:image:height" content="630">
   <meta property="og:url" content="https://successcall.github.io/">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Success Call Display | Sri Lanka Prayer &amp; Iqamah Times">
+  <meta name="twitter:title" content="Success Call | Sri Lanka Prayer &amp; Iqamah Times">
   <meta name="twitter:description" content="Sri Lanka prayer and Iqamah times with accurate masjid schedules for web and Android displays.">
   <meta name="twitter:image" content="https://successcall.github.io/social_preview_1200x630.png">
-  <meta name="twitter:image:alt" content="Success Call Display prayer time preview">
+  <meta name="twitter:image:alt" content="Success Call prayer time display preview">
   <link rel="image_src" href="https://successcall.github.io/social_preview_1200x630.png">
 
   <!-- iOS meta tags & icons -->
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
-  <meta name="apple-mobile-web-app-title" content="Success Call Display">
+  <meta name="apple-mobile-web-app-title" content="Success Call">
   <link rel="apple-touch-icon" href="/icons/Icon-192.png">
 
   <!-- Favicon -->
@@ -59,7 +63,7 @@
   <meta name="msapplication-TileImage" content="/icons/Icon-512.png">
   <meta name="theme-color" content="#1B5E20">
 
-  <title>Success Call Display | Sri Lanka Prayer &amp; Iqamah Times</title>
+  <title>Success Call | Sri Lanka Prayer &amp; Iqamah Times</title>
   <link rel="manifest" href="manifest.json">
   <link rel="canonical" href="https://successcall.github.io/">
 
@@ -67,13 +71,13 @@
     {
       "@context": "https://schema.org",
       "@type": "SoftwareApplication",
-      "name": "Success Call Display",
+      "name": "Success Call",
       "operatingSystem": "Android, Web",
       "applicationCategory": "LifestyleApplication",
       "description": "Sri Lanka prayer and Iqamah times with accurate masjid schedules for web and Android displays.",
       "image": "https://successcall.github.io/social_preview_1200x630.png",
       "url": "https://successcall.github.io/",
-      "downloadUrl": "https://play.google.com/store/apps/details?id=dev.aimzcode.successcall",
+      "downloadUrl": "https://play.google.com/store/apps/details?id=me.musab.successcall",
       "offers": {
         "@type": "Offer",
         "price": "0",
@@ -83,7 +87,8 @@
   </script>
 
 
-  <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no" name="viewport">
+  <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no"
+    name="viewport">
 
   <!-- Cache busting meta tags -->
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
@@ -103,8 +108,86 @@
 
 
 
-  
-  
+  <style id="splash-screen-style">
+    html {
+      height: 100%;
+      width: 100%;
+      overflow: auto;
+    }
+
+    body {
+      margin: 0;
+      height: 100%;
+      width: 100%;
+      background-color: #212121;
+      background-size: 100% 100%;
+      touch-action: pan-x pan-y;
+      overscroll-behavior: none;
+      overflow: auto;
+    }
+
+    * {
+      user-select: none;
+      -webkit-user-select: none;
+      -webkit-touch-callout: none;
+    }
+
+    .center {
+      margin: 0;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      -ms-transform: translate(-50%, -50%);
+      transform: translate(-50%, -50%);
+    }
+
+    .contain {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+
+    .stretch {
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
+
+    .cover {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .bottom {
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      -ms-transform: translate(-50%, 0);
+      transform: translate(-50%, 0);
+    }
+
+    .bottomLeft {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+    }
+
+    .bottomRight {
+      position: absolute;
+      bottom: 0;
+      right: 0;
+    }
+  </style>
+  <script id="splash-screen-script">
+    function removeSplashFromWeb() {
+      document.getElementById("splash")?.remove();
+      document.getElementById("splash-branding")?.remove();
+      document.body.style.background = "transparent";
+    }
+  </script>
   <script>
     // App version - Update this with each deployment
     window.APP_VERSION = '{{BUILD_TIMESTAMP}}';
@@ -158,90 +241,18 @@
       lastTouchEnd = now;
     }, false);
   </script>
-
-
-  <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport">
-  
-  
-
-
-  <style id="splash-screen-style">
-    html {
-      height: 100%
-    }
-
-    body {
-      margin: 0;
-      min-height: 100%;
-      background-color: #212121;
-          background-size: 100% 100%;
-    }
-
-    .center {
-      margin: 0;
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      -ms-transform: translate(-50%, -50%);
-      transform: translate(-50%, -50%);
-    }
-
-    .contain {
-      display:block;
-      width:100%; height:100%;
-      object-fit: contain;
-    }
-
-    .stretch {
-      display:block;
-      width:100%; height:100%;
-    }
-
-    .cover {
-      display:block;
-      width:100%; height:100%;
-      object-fit: cover;
-    }
-
-    .bottom {
-      position: absolute;
-      bottom: 0;
-      left: 50%;
-      -ms-transform: translate(-50%, 0);
-      transform: translate(-50%, 0);
-    }
-
-    .bottomLeft {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-    }
-
-    .bottomRight {
-      position: absolute;
-      bottom: 0;
-      right: 0;
-    }
-  </style>
-  <script id="splash-screen-script">
-    function removeSplashFromWeb() {
-      document.getElementById("splash")?.remove();
-      document.getElementById("splash-branding")?.remove();
-      document.body.style.background = "transparent";
-    }
-  </script>
 </head>
 
 <body>
   <picture id="splash">
-      <source srcset="splash/img/light-1x.png 1x, splash/img/light-2x.png 2x, splash/img/light-3x.png 3x, splash/img/light-4x.png 4x" media="(prefers-color-scheme: light)">
-      <source srcset="splash/img/dark-1x.png 1x, splash/img/dark-2x.png 2x, splash/img/dark-3x.png 3x, splash/img/dark-4x.png 4x" media="(prefers-color-scheme: dark)">
-      <img class="center" aria-hidden="true" src="splash/img/light-1x.png" alt="">
+    <source
+      srcset="splash/img/light-1x.png 1x, splash/img/light-2x.png 2x, splash/img/light-3x.png 3x, splash/img/light-4x.png 4x"
+      media="(prefers-color-scheme: light)">
+    <source
+      srcset="splash/img/dark-1x.png 1x, splash/img/dark-2x.png 2x, splash/img/dark-3x.png 3x, splash/img/dark-4x.png 4x"
+      media="(prefers-color-scheme: dark)">
+    <img class="center" aria-hidden="true" src="splash/img/light-1x.png" alt="">
   </picture>
-
-
-
-
 
 
 
@@ -254,7 +265,6 @@
   <script src="service_worker_loader.js"></script>
 
 
+</body>
 
-
-
-</body></html>
+</html>
